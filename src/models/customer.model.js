@@ -13,11 +13,8 @@ Customer.init({
     last_name: DataTypes.STRING,
     email: { type: DataTypes.STRING, allowNull: false },
     phone: DataTypes.STRING,
-    accepts_email_marketing: { type: DataTypes.BOOLEAN, defaultValue: false },
-    accepts_sms_marketing: { type: DataTypes.BOOLEAN, defaultValue: false },
-    default_address: DataTypes.JSON,
+    accepts_email_marketing: { type: DataTypes.BOOLEAN, defaultValue: false },    default_address: DataTypes.JSON,
     tags: DataTypes.STRING,
-    note: DataTypes.TEXT,
     raw_data: DataTypes.JSON 
   }, {
     sequelize,

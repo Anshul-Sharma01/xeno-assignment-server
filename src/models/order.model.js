@@ -27,7 +27,8 @@ Order.init({
         references : { model : "tenants", key : "id"}
     } 
 }, {
-    sequelize : "Order",
+    sequelize,
+    modelName : "Order",
     tableName : "orders",
     timestamps : false
 })

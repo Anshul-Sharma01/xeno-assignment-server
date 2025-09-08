@@ -11,14 +11,6 @@ const db = {
     Tenant
 };
 
-Object.values(db).forEach((model) => {
-  if (model.initModel) model.initModel(sequelize);
-});
-
-Object.values(db).forEach((model) => {
-  if (model.associate) model.associate(db);
-});
-
 
 export default db;
 
