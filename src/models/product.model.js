@@ -6,7 +6,7 @@ class Product extends Model {}
 
 Product.init({
     external_id: { type: DataTypes.STRING, allowNull: false, unique: true },
-    tenant_id: {
+    tenantId: {
         type: DataTypes.UUID,
         allowNull: false,
         references : {model : "tenants", key : "id"} 

@@ -10,6 +10,7 @@ import cookieParser from "cookie-parser";
 import ingestionRouter from "./routes/ingestion.routes.js"
 import dashboardRouter from "./routes/dashboard.routes.js";
 import tenantRouter from "./routes/tenant.routes.js";
+import SyncSchedulerService from "./schedulers/sync.scheduler.js";
 
 dotenv.config();
 
@@ -37,6 +38,9 @@ const startServer = async() => {
     try{
         await sequelize.sync();
         console.log("Database Synced Successfully");
+
+        const scheduler = new SyncSchedulerService();
+        scheduler.start();
 
         app.listen(PORT, () => {
             console.log(`Server is listening on http://localhost:${PORT}`);

@@ -79,4 +79,15 @@ export default class TenantService{
             await tenant.save();
         }
     }
+    async getAllTenants(){
+        return await Tenant.findAll();
+    }
+
+    async getTenantById(id){
+        const tenant = await Tenant.findByPk(id);
+        if(!tenant){
+            throw new ApiError(404, "Tenant not found !!");
+        }
+        return tenant;
+    }
 }

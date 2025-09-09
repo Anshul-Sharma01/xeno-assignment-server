@@ -7,7 +7,7 @@ class DashboardController{
         try{
             const { tenantId } = req.params;
 
-            const totalCustomers = await db.Customer.count({ where : { tenant_id : tenantId } });
+            const totalCustomers = await db.Customer.count({ where : { tenantId } });
             const totalOrders = await db.Order.count({ where : { tenantId } });
 
             const totalRevenue = await db.Order.sum("total_price", {
