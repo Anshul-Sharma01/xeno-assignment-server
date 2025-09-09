@@ -4,6 +4,7 @@ import sequelize from "../config/db.config.js";
 class Customer extends Model {}
 
 Customer.init({
+    external_id: { type: DataTypes.STRING, allowNull: false, unique: true },
     tenant_id: {
         type: DataTypes.UUID,
         allowNull: false,

@@ -23,6 +23,7 @@ class IngestionController{
 
             for(const customer of customers){
                 await db.Customer.upsert({
+                    external_id : String(customer.id),
                     tenant_id : tenantId,
                     first_name : customer.first_name,
                     last_name : customer.last_name,
@@ -38,6 +39,7 @@ class IngestionController{
             const products = await shopify.fetchProducts();
             for(const product of products){
                 await db.Product.upsert({
+                    external_id : String(product.id),
                     tenant_id : tenantId,
                     handle : product.handle,
                     title : product.title,
@@ -46,9 +48,9 @@ class IngestionController{
                     product_type : product.product_type,
                     tags : product.tags,
                     published : product.status === "active",
-                    price: product.variants[0]?.price || 0,
-                    sku: product.variants[0]?.sku || null,
-                    inventory_qty: product.variants[0]?.inventory_quantity || 0,
+                    price: product.variants?.[0]?.price ? Number(product.variants[0].price) : 0,
+                    sku: product.variants?.[0]?.sku || null,
+                    inventory_qty: product.variants?.[0]?.inventory_quantity ? Number(product.variants[0].inventory_quantity) : 0,
                     image_src: product.image?.src || null,
                     options: product.options,
                     raw_data: product

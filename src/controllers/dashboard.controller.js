@@ -7,14 +7,13 @@ class DashboardController{
         try{
             const { tenantId } = req.params;
 
-            const totalCustomers = await db.Customer.count({
-                where : { tenant_id : tenantId }
-            });
+            const totalCustomers = await db.Customer.count({ where : { tenant_id : tenantId } });
             const totalOrders = await db.Order.count({ where : { tenantId } });
 
             const totalRevenue = await db.Order.sum("total_price", {
                 where : { tenantId }
             });
+            console.log(`Total Revenue : ${totalRevenue}, Total Orders : ${totalOrders}, Total Customers : ${totalCustomers}`);
 
             res.status(200).json({
                 success : true,
@@ -47,7 +46,7 @@ class DashboardController{
                 where,
                 attributes : [
                     [Sequelize.fn("DATE", Sequelize.col("created_at")), "date"],
-                    [Sequelize.fn("COUNT", Sequelize.col("id")), "orderCount"],
+                    [Sequelize.fn("COUNT", Sequelize.col("order_id")), "orderCount"],
                     [Sequelize.fn("SUM", Sequelize.col("total_price")), "revenue"],
                 ],
                 group : ["date"],
