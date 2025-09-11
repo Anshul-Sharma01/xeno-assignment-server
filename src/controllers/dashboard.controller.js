@@ -100,34 +100,6 @@ class DashboardController{
         }
     }
 
-    static async getTopProducts(req, res){
-        try{
-            const { tenantId } = req.params;
-            const topProducts = await db.Order.findAll({
-                where : { tenantId },
-                attributes : [
-                    [Sequelize.fn("JSON_EXTRACT", Sequelize.col("line_items"), "$[*].product_id"), "productId"],
-                    [Sequelize.fn("SUM", Sequelize.col("total_price")), "revenue"]
-                ],
-                group : ["productId"],
-                order : [[Sequelize.literal("revenue"), "DESC"]],
-                limit : 5
-            });
-            res.status(200)
-            .json({
-                success : true,
-                message : "Successfully fetched top products by sales !!",
-                products : topProducts
-            })
-        }catch(err){
-            console.error(`Top Products by sales error : ${err}`);
-            res.status(500)
-            .json({
-                success : false,
-                error : "Failed to fetch top products by sales"
-            })
-        }
-    }
 
     static async getAverageOrderValue(req, res){
         try{

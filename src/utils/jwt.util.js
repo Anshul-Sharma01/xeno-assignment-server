@@ -4,7 +4,7 @@ export const generateAccessToken = (tenant) => {
     return jwt.sign(
         { id: tenant.id, email: tenant.email, shopifyDomain: tenant.shopifyDomain },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: '5m' }
+        { expiresIn: '15m' }
     );
 };
 

@@ -24,7 +24,7 @@ export default class TenantService{
         tenant.refreshToken = jwtRefreshToken;
         await tenant.save();
 
-        return { accessToken : jwtAccessToken, refreshToken : jwtRefreshToken }
+        return { accessToken : jwtAccessToken, refreshToken : jwtRefreshToken, tenantId : tenant?.id };
 
     }
 
@@ -44,7 +44,7 @@ export default class TenantService{
 
         tenant.refreshToken = jwtRefreshToken;
         await tenant.save();
-        return { accessToken : jwtAccessToken, refreshToken : jwtRefreshToken };
+        return { accessToken : jwtAccessToken, refreshToken : jwtRefreshToken, tenantId : tenant?.id };
     }
 
     async refreshTenantToken(refreshToken){
@@ -69,7 +69,7 @@ export default class TenantService{
         tenant.refreshToken = newRefreshToken;
         await tenant.save();
 
-        return { accessToken : newAccessToken, refreshToken : newRefreshToken };
+        return { accessToken : newAccessToken, refreshToken : newRefreshToken, tenantId : tenant?.id };
     }
 
     async logoutTenant(refreshToken){
