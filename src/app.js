@@ -4,6 +4,8 @@ import cors from "cors"
 import sequelize from "./config/db.config.js";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
+import http from "http";
+import { Server } from "socket.io";
 
 
 // Router imports
@@ -34,15 +36,36 @@ app.use("/api/v1/ingestion", ingestionRouter);
 app.use("/api/v1/dashboard", dashboardRouter);
 app.use("/api/v1/tenant", tenantRouter);
 
+
+const server = http.createServer(app);
+
+const io = new Server(server, {
+    cors : {
+        origin : process.env.FRONTEND_URL,
+        methods : ['GET', 'POST'],
+        credentials : true
+    }
+})
+
+
+io.on("connection", (socket) => {
+    console.log(`Client connected : ${socket.id}`);
+
+    socket.on("disconnect", () => {
+        console.log(`Client disconnected : ${socket.id}`);
+    });
+})
+
+
 const startServer = async() => {
     try{
         await sequelize.sync();
         console.log("Database Synced Successfully");
 
-        const scheduler = new SyncSchedulerService();
+        const scheduler = new SyncSchedulerService(io);
         scheduler.start();
 
-        app.listen(PORT, () => {
+        server.listen(PORT, () => {
             console.log(`Server is listening on http://localhost:${PORT}`);
         })
     }catch(err){

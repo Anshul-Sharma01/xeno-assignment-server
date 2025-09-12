@@ -3,8 +3,9 @@ import db from "../models/index.js";
 import ShopifySyncService from "../services/shopifysync.service.js";
 
 class SyncSchedulerService{
-    constructor(){
+    constructor(io){
         this.shopifySyncService = new ShopifySyncService();
+        this.io = io;
     }
 
     async runSyncScheduler(){
@@ -15,15 +16,30 @@ class SyncSchedulerService{
             for(const tenant of tenants){
                 console.log(`Syncing data for tenant : ${tenant.name}`);
                 await this.shopifySyncService.syncTenantData(tenant);
+
+                this.io.emit("tenantSyncComplete",{
+                    tenantId : tenant.id,
+                    timestamp : new Date()
+                });
             }
+
+            this.io.emit("syncComplete", {
+                message : "All tenants synced successfully",
+                timestamp : new Date()
+            })
         }catch(err){
             console.error(`Error occurred while running cron jobs : ${err?.message}`);
             console.error(`Full error:`, err);
+
+            this.io.emit("syncError", {
+                message : err?.message || "Sync Error",
+                timestamp : new Date()
+            })
         }
     }
 
     start(){
-        cron.schedule("*/30 * * * *", async() => {
+        cron.schedule("*/5 * * * *", async() => {
             console.log("Running cron jobs !!");
             await this.runSyncScheduler();
         })

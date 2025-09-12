@@ -24,7 +24,7 @@ export default class TenantService{
         tenant.refreshToken = jwtRefreshToken;
         await tenant.save();
 
-        return { accessToken : jwtAccessToken, refreshToken : jwtRefreshToken, tenantId : tenant?.id };
+        return { accessToken : jwtAccessToken, refreshToken : jwtRefreshToken, tenantId : tenant?.id, tenant_name : tenant?.name, tenant_email : tenant?.email, tenant_domain : tenant?.shopifyDomain };
 
     }
 
@@ -44,7 +44,7 @@ export default class TenantService{
 
         tenant.refreshToken = jwtRefreshToken;
         await tenant.save();
-        return { accessToken : jwtAccessToken, refreshToken : jwtRefreshToken, tenantId : tenant?.id };
+        return { accessToken : jwtAccessToken, refreshToken : jwtRefreshToken, tenantId : tenant?.id,  tenant_name : tenant?.name, tenant_email : tenant?.email, tenant_domain : tenant?.shopifyDomain };
     }
 
     async refreshTenantToken(refreshToken){
@@ -69,7 +69,7 @@ export default class TenantService{
         tenant.refreshToken = newRefreshToken;
         await tenant.save();
 
-        return { accessToken : newAccessToken, refreshToken : newRefreshToken, tenantId : tenant?.id };
+        return { accessToken : newAccessToken, refreshToken : newRefreshToken, tenantId : tenant?.id, tenant_name : tenant?.name, tenant_email : tenant?.email, tenant_domain : tenant?.shopifyDomain };
     }
 
     async logoutTenant(refreshToken){
