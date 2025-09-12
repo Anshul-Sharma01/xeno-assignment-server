@@ -6,8 +6,9 @@ export default class TenantController{
 
     static cookieOptions = {
         secure : process.env.NODE_ENV === "production",
-        maxAge : 60 * 60 * 10000,
         httpOnly : true,
+        sameSite : process.env.NODE_ENV === "production" ? "none" : "lax",
+        maxAge : 60 * 60 * 10000,
     }
 
     static async register(req, res){

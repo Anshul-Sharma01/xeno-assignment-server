@@ -22,7 +22,9 @@ const PORT = process.env.PORT || 5000;
 
 app.use(cors({
     origin: process.env.FRONTEND_URL,
-    credentials: true
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
 }))
 
 
@@ -30,6 +32,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended : true }))
 app.use(morgan("dev"));
 app.use(cookieParser());
+app.set('trust proxy', 1);
 
 
 app.use("/api/v1/ingestion", ingestionRouter);
