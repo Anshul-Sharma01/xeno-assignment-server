@@ -20,8 +20,11 @@ class ShopifySyncService{
                     default_address : cust.default_address,
                     tags : cust.tags,
                     raw_data : cust
+                }, {
+                    conflictFields: ['external_id']
                 });
             }
+            console.log(`Synced ${customers?.length || 0} customers`);
 
             const products = await shopify.fetchProducts();
             for(const prod of products){
@@ -43,8 +46,11 @@ class ShopifySyncService{
                     image_src : prod.image?.src || null,
                     options : prod.options,
                     raw_data : prod
+                }, {
+                    conflictFields: ['external_id']
                 });
             }
+            console.log(`Synced ${products?.length || 0} products`);
 
             const orders = await shopify.fetchOrders();
             for(const order of orders){
@@ -67,12 +73,16 @@ class ShopifySyncService{
                     created_at : order.created_at,
                     updated_at : order.updated_at,
                     raw_data : order,
+                }, {
+                    conflictFields: ['order_id']
                 })
             }
+            console.log(`Synced ${orders?.length || 0} orders`);
 
-            console.log(`Tenant synced : ${tenant?.name}`);
+            console.log(`Tenant synced successfully: ${tenant?.name}`);
         }catch(error){    
-            console.error(`Failed to sync tenant : ${tenant?.name}`, error?.message);
+            console.error(`Failed to sync tenant: ${tenant?.name}`, error?.message);
+            console.error(`Error details:`, error);
             throw error;
         }
     }

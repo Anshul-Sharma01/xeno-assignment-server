@@ -10,17 +10,20 @@ class SyncSchedulerService{
     async runSyncScheduler(){
         try{
             const tenants = await db.Tenant.findAll();
+            console.log(`Found ${tenants.length} tenants to sync`);
+            
             for(const tenant of tenants){
                 console.log(`Syncing data for tenant : ${tenant.name}`);
                 await this.shopifySyncService.syncTenantData(tenant);
             }
         }catch(err){
             console.error(`Error occurred while running cron jobs : ${err?.message}`);
+            console.error(`Full error:`, err);
         }
     }
 
     start(){
-        cron.schedule("*/30 * * * *", async() => {
+        cron.schedule("*/1 * * * *", async() => {
             console.log("Running cron jobs !!");
             await this.runSyncScheduler();
         })
