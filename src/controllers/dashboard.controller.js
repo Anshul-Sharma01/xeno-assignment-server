@@ -97,7 +97,7 @@ class DashboardController{
             });
 
             // Fetch customer names for each customer_id
-            const customerIds = topCustomers.map(customer => customer.customer_id).filter(id => id);
+            const customerIds = topCustomers?.map(customer => customer.customer_id).filter(id => id);
             const customers = await db.Customer.findAll({
                 where : { 
                     tenantId,
