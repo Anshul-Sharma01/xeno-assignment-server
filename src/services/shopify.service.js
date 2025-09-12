@@ -35,6 +35,19 @@ class ShopifyService{
             throw error;
         }
     }
+
+    async fetchAbandonedCheckouts(){
+        try{
+            const params = {
+                status : "abandoned",
+                limit : 250
+            };
+            const res = await this.client.get("/checkouts.json", { params });
+            return res.data.checkouts;
+        }catch(err){
+            console.error(`Error fetching abondoned checkouts : ${err?.response?.message}`);
+        }
+    }
 }
 
 export default ShopifyService;

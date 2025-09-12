@@ -79,6 +79,23 @@ class ShopifySyncService{
             }
             console.log(`Synced ${orders?.length || 0} orders`);
 
+            const checkouts = await shopify.fetchAbandonedCheckouts();
+            for(const c of checkouts){
+                await db.Checkout.upsert({
+                    external_id: String(c.id),
+                    tenantId: tenant.id,
+                    customer_id: c.customer?.id || null,
+                    line_items: c.line_items,
+                    subtotal_price: c.subtotal_price,
+                    status: c.abandoned_checkout_url ? "abandoned" : "started",
+                    raw_data: c,
+                }, {
+                    conflictFields : ["external_id"]
+                })
+            }
+
+            console.log(`Synced ${checkouts?.length || 0} abandoned checkouts`);
+
             console.log(`Tenant synced successfully: ${tenant?.name}`);
         }catch(error){    
             console.error(`Failed to sync tenant: ${tenant?.name}`, error?.message);

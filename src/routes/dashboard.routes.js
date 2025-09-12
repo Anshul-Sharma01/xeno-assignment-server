@@ -9,5 +9,7 @@ router.get("/:tenantId/summary", authenticateTenant, DashboardController.getSumm
 router.get("/:tenantId/orders-by-date", authenticateTenant, DashboardController.getOrdersByDate);
 router.get("/:tenantId/top-customers", authenticateTenant, DashboardController.getTopCustomers);
 router.get("/:tenantId/avg-order-value", authenticateTenant, DashboardController.getAverageOrderValue);
+router.get("/:tenantId/abandoned-checkouts", authenticateTenant, DashboardController.getAbandonedCheckouts);
+
 
 export default router;

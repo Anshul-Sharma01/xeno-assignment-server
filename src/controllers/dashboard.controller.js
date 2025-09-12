@@ -163,6 +163,38 @@ class DashboardController{
             })
         }
     }
+
+
+    static async getAbandonedCheckouts(req, res){
+        try{
+            const { tenantId } = req.params;
+
+            const where = { tenantId, status: "abandoned" };
+            const count = await db.Checkout.count({ where });
+            const recent = await db.Checkout.findAll({
+                where,
+                attributes: ["external_id", "customer_id", "subtotal_price", "createdAt"],
+                order: [["createdAt", "DESC"]],
+                limit: 10,
+                raw: true
+            });
+
+            res.status(200)
+            .json({
+                success: true,
+                message: "Successfully fetched abandoned checkouts",
+                count,
+                recent
+            })
+        }catch(err){
+            console.error("Abandoned checkouts error : ", err);
+            res.status(500)
+            .json({
+                success: false,
+                error: "Failed to fetch abandoned checkouts"
+            })
+        }
+    }
 }
 
 
