@@ -28,6 +28,7 @@ class ShopifyService{
                 limit: 250,    
             };
             const res = await this.client.get("/orders.json", { params });
+            
             return res.data.orders;
         } catch (error) {
             console.error(`Error fetching orders:`, error.response?.data || error.message);

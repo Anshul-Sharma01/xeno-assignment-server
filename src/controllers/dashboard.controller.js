@@ -73,6 +73,13 @@ class DashboardController{
         try{
             const { tenantId } = req.params;
 
+            const allOrders = await db.Order.findAll({
+                where : { tenantId },
+                attributes : ["order_id", "customer_id", "total_price"],
+                limit : 5
+            });
+            console.log("Sample orders for tenant:", JSON.stringify(allOrders, null, 2));
+
             const topCustomers = await db.Order.findAll({
                 where : { tenantId },
                 attributes : [
@@ -80,15 +87,44 @@ class DashboardController{
                     [Sequelize.fn("SUM", Sequelize.col("total_price")), "totalSpend"]
                 ],
                 group : ["customer_id"],
-                order : [[Sequelize.literal("totalSpend"), "DESC"]],
-                limit : 5
+                order : [[Sequelize.literal("SUM(total_price)"), "DESC"]],
+                limit : 5,
+                raw: true
             });
+
+            // Fetch customer names for each customer_id
+            const customerIds = topCustomers.map(customer => customer.customer_id).filter(id => id);
+            const customers = await db.Customer.findAll({
+                where : { 
+                    tenantId,
+                    external_id: customerIds 
+                },
+                attributes : ["external_id", "first_name", "last_name", "email"]
+            });
+
+            const customerMap = {};
+            customers.forEach(customer => {
+                const customerName = `${customer.first_name || ''} ${customer.last_name || ''}`.trim() || 
+                                   customer.email || 
+                                   'Guest Customer';
+                customerMap[customer.external_id] = customerName;
+            });
+
+            const formattedTopCustomers = topCustomers.map(customer => ({
+                customer_id: customer.customer_id,
+                customer_name: customer.customer_id ? 
+                    (customerMap[customer.customer_id] || 'Guest Customer') : 
+                    'Guest Customer',
+                totalSpend: customer.totalSpend
+            }));
+
+            console.log("Formatted customers : ", formattedTopCustomers);
 
             res.status(200)
             .json({
                 success : true,
                 message : "Successfully fetched the top customers !!",
-                topCustomers : topCustomers
+                topCustomers : formattedTopCustomers
             })
         }catch(err){
             console.error(`Top Customers error : ${err}`);
