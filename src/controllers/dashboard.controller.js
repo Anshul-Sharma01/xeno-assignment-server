@@ -38,8 +38,12 @@ class DashboardController{
 
             const where = { tenantId };
             if(start && end){
+                const startDate = new Date(start);
+                startDate.setHours(0, 0, 0, 0);
+                const endDate = new Date(end);
+                endDate.setHours(23, 59, 59, 999);
                 where.created_at = {
-                    [Op.between] : [new Date(start), new Date(end)]
+                    [Op.between] : [startDate, endDate]
                 };
             }
             const orders = await db.Order.findAll({
