@@ -39,7 +39,7 @@ class SyncSchedulerService{
     }
 
     start(){
-        cron.schedule("*/30 * * * *", async() => {
+        cron.schedule(`*/${process.env.SCHEDULER_SYNC_TIME} * * * *`, async() => {
             console.log("Running cron jobs !!");
             await this.runSyncScheduler();
         })
